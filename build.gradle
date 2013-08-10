@@ -1,0 +1,15 @@
+apply plugin: 'groovy'
+
+repositories {
+  mavenCentral()
+}
+dependencies {
+  compile 'org.codehaus.groovy:groovy-all:2.1.6'
+}
+
+
+task exec (dependsOn: [classes], type: JavaExec) {
+  main = 'Shower'
+  classpath = sourceSets.main.runtimeClasspath
+  args 'popisky.txt'
+}
