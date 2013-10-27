@@ -15,4 +15,9 @@ To:
 Run with:
 
 gradle exec
+ - file description.txt will be taken from src/main/resources/ and process
+gradle exec -q -Pquiet 
+ - the output will be just the "converted" data from the file
+gradle exec -Pfile=/path/to/file.txt
+ - specified file will be taken to parse
 

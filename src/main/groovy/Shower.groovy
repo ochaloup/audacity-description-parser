@@ -4,13 +4,17 @@
 */
 class Shower {
   def fileName
+  def isQuiet
 
-  Shower(String fileName) {
+  Shower(String fileName, String quiet) {
     this.fileName = fileName
+    this.isQuiet = Boolean.parseBoolean(quiet)
   }  
 
   def run() {
-    println "Running for $fileName"
+    if(!isQuiet) {
+      println "Running for $fileName"
+    }
     URL url = this.getClass().getClassLoader().getResource(fileName)
     File f
 
@@ -21,7 +25,9 @@ class Shower {
     }
 
     if(f != null && f.exists()) {
-      println "Yup, we load file '$fileName'"
+      if(!isQuiet) {
+        println "Yup, we load file '$fileName'"
+      }
       f.eachLine{
         if (it.startsWith('#') || it.trim().startsWith('#')) {
           // ignoring comment line
@@ -30,7 +36,7 @@ class Shower {
 
         def arr = it.split(/\t/) 
         if(arr.length != 3) {
-          println "Can't process line '$it' as it's not parsable"
+          println "[WARN] Can't process line '$it' as it's not parsable"
           return;
         }
         // collect will call the method on the each item of array and this will be propagated to array
@@ -70,9 +76,16 @@ class Shower {
     return out << "${m}:${s}"
   }
   
+  
+  /**
+   * MAIN
+   * @param args file
+   * @param args isQuiet
+   */
   public static void main(String[] args) {
     def fileName = args.length > 0 ? args[0] : 'popisky.txt'
-    def s = new Shower(fileName)
+    def isQuiet = args.length > 1 ? args[1] : false
+    def s = new Shower(fileName, isQuiet)
     s.run()
   }
 }

@@ -8,8 +8,31 @@ dependencies {
 }
 
 
-task exec (dependsOn: [classes], type: JavaExec) {
-  main = 'Shower'
+task assessProperties { task ->
+  if(!project.hasProperty('file')) {
+    project.file = 'description.txt'
+  }
+  if(!project.hasProperty('quiet')) {
+    project.quiet = 'false'
+  } else {
+    project.quiet = 'true'
+  }
+  
+  project.mainClass = 'Shower'
+}
+
+// run as:
+// gradle exec <-Pfile=/path/to/file.txt> <-Pquiet> -q
+task exec (dependsOn: [assessProperties, classes], type: JavaExec) {
+  main = "$mainClass"
   classpath = sourceSets.main.runtimeClasspath
-  args 'popisky.txt'
+  args "$file", "$quiet"
+}
+
+// TODO: does not work :/
+task debug(dependsOn: [assessProperties, classes], type: JavaExec) {
+  main = "$mainClass"
+  classpath = sourceSets.main.runtimeClasspath
+  args "$file", "$quiet"
+  jvmArgs = ["-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"]
 }
